@@ -45,7 +45,7 @@ const day7 = DAYS[6];
 
 describe('day flow', () => {
   it('unlocks only day 1 at the start', () => {
-    const path = buildPath(DAYS, createInitialState(), 'free', '2026-11-18');
+    const path = buildPath(DAYS, createInitialState(), new Date(2026, 10, 18, 9));
     expect(path).toHaveLength(30);
     expect(path[0].state).toBe('current');
     expect(path.slice(1).every((n) => n.state === 'locked')).toBe(true);
@@ -81,10 +81,13 @@ describe('day flow', () => {
     expect(summary.deltas.some((d) => d.kind === 'attribute' && d.key === 'initiative')).toBe(true);
     expect(summary.badges.map((b) => b.id)).toEqual(expect.arrayContaining(['first-hello', 'first-page']));
 
-    expect(nodeState(1, state, 'free', '2026-11-18', true)).toBe('completed');
-    expect(nodeState(2, state, 'free', '2026-11-18', true)).toBe('current');
-    expect(nodeState(2, state, 'daily', '2026-11-18', true)).toBe('cooldown');
-    expect(nodeState(2, state, 'daily', '2026-11-19', true)).toBe('current');
+    const finishedAt = new Date(state.days[1].completedAt!);
+    expect(nodeState(1, state, finishedAt, true)).toBe('completed');
+    expect(nodeState(2, state, finishedAt, true)).toBe('cooldown');
+    expect(nodeState(2, state, new Date(finishedAt.getTime() + 24 * 60 * 60 * 1000 - 1), true)).toBe('cooldown');
+    expect(nodeState(2, state, new Date(finishedAt.getTime() + 24 * 60 * 60 * 1000), true)).toBe('current');
+    expect(nodeState(3, state, new Date(finishedAt.getTime() + 48 * 60 * 60 * 1000), true)).toBe('locked');
+    expect(nodeState(8, state, finishedAt, true, true)).toBe('current');
   });
 
   it('does not award XP twice for repeated actions', () => {

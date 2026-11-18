@@ -1,6 +1,6 @@
 import { Download, Monitor, Moon, Sun, Trash2, Upload } from 'lucide-react';
 import { useRef, useState, type ChangeEvent, type ReactNode } from 'react';
-import type { MotionPreference, PacingMode, ThemePreference } from '../../types';
+import type { MotionPreference, ThemePreference } from '../../types';
 import { Button } from '../../components/ui/Button';
 import { Modal } from '../../components/ui/Modal';
 import { toISODate } from '../../lib/dates';
@@ -84,21 +84,6 @@ export function SettingsScreen() {
       <Section title="Feedback">
         <Toggle label="Sound effects" checked={settings.sound} onChange={(sound) => updateSettings({ sound })} />
         <Toggle label="Vibration" description="On supported phones" checked={settings.haptics} onChange={(haptics) => updateSettings({ haptics })} />
-      </Section>
-
-      <Section title="Pacing">
-        <Segmented<PacingMode>
-          label="When does the next day unlock?"
-          value={settings.pacing}
-          onChange={(pacing) => updateSettings({ pacing })}
-          options={[
-            { value: 'daily', label: 'Next calendar day' },
-            { value: 'free', label: 'Right away' },
-          ]}
-        />
-        <p className="text-sm text-ink-soft dark:text-slate-400">
-          Standard pace is one mission a day: the next day unlocks tomorrow. Switch to right away if you want to catch up.
-        </p>
       </Section>
 
       <Section title="Your data">

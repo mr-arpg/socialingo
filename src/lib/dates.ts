@@ -50,3 +50,12 @@ export function formatLongDate(value: ISODate | ISODateTime): string {
 export function formatMonth(value: ISODate): string {
   return toDate(value).toLocaleDateString(LOCALE, { month: 'short' });
 }
+
+export function formatDateTime(value: ISODateTime): string {
+  return new Date(value).toLocaleString(LOCALE, {
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  });
+}

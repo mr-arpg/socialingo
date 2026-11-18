@@ -410,15 +410,12 @@ export type LogDraft = Pick<LogEntry, 'answers' | 'confidence' | 'energy' | 'moo
 
 export type ThemePreference = 'light' | 'dark' | 'system';
 export type MotionPreference = 'system' | 'reduced' | 'full';
-/** `daily` unlocks the next node at local midnight after completion; `free` unlocks immediately. */
-export type PacingMode = 'daily' | 'free';
 
 export interface Settings {
   theme: ThemePreference;
   sound: boolean;
   haptics: boolean;
   motion: MotionPreference;
-  pacing: PacingMode;
 }
 
 export interface Profile {

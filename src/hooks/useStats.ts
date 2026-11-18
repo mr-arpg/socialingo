@@ -5,12 +5,12 @@ import { computeStats } from '../engine/stats';
 import { toISODate } from '../lib/dates';
 import { useAppStore } from '../store/useAppStore';
 
-/** Today's local date, refreshed when the tab regains focus or the clock passes midnight. */
-export function useToday(): string {
-  const [today, setToday] = useState(() => toISODate(new Date()));
+/** Current time, refreshed each minute and when the tab regains focus. */
+export function useNow(): Date {
+  const [now, setNow] = useState(() => new Date());
 
   useEffect(() => {
-    const refresh = () => setToday(toISODate(new Date()));
+    const refresh = () => setNow(new Date());
     const interval = window.setInterval(refresh, 60_000);
     document.addEventListener('visibilitychange', refresh);
     return () => {
@@ -19,7 +19,13 @@ export function useToday(): string {
     };
   }, []);
 
-  return today;
+  return now;
+}
+
+/** Today's local date, refreshed when the tab regains focus or the clock passes midnight. */
+export function useToday(): string {
+  const now = useNow();
+  return toISODate(now);
 }
 
 export function useStats(): UserStats {

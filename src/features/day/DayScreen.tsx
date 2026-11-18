@@ -5,7 +5,8 @@ import type { CompletionSummary, LogDraft } from '../../types';
 import { getDay } from '../../content/days';
 import { nodeState } from '../../engine/day';
 import { useFeedback } from '../../hooks/useFeedback';
-import { useToday } from '../../hooks/useStats';
+import { useNow } from '../../hooks/useStats';
+import { useAdminUnlock } from '../../lib/admin';
 import { cn } from '../../lib/text';
 import { useAppStore } from '../../store/useAppStore';
 import { BriefingDeck } from './BriefingDeck';
@@ -26,8 +27,9 @@ export function DayScreen() {
   const day = Number(dayNumber);
   const content = getDay(day);
   const data = useAppStore((s) => s.data);
-  const today = useToday();
-  const state = content ? nodeState(day, data, data.settings.pacing, today, true) : 'locked';
+  const now = useNow();
+  const admin = useAdminUnlock();
+  const state = content ? nodeState(day, data, now, true, admin) : 'locked';
 
   if (!content || state === 'locked' || state === 'cooldown') return <Navigate to="/" replace />;
   return <DayFlow key={day} day={day} />;

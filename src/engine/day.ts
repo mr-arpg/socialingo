@@ -4,17 +4,16 @@ import type {
   DayContent,
   DayNumber,
   DayProgress,
-  ISODate,
   MissionTier,
   NodeState,
-  PacingMode,
   PersistedState,
   RepEvent,
 } from '../types';
 import { COUNTER_KEYS } from '../types';
-import { toISODate } from '../lib/dates';
 
 export const TOTAL_DAYS = 30;
+/** The next day opens this long after the previous one is completed. */
+export const DAY_WAIT_MS = 24 * 60 * 60 * 1000;
 
 export function emptyCounters(): CounterTotals {
   return { approaches: 0, conversations: 0, kindnesses: 0, courageReps: 0 };
@@ -52,38 +51,52 @@ export function readyToComplete(state: PersistedState, day: DayNumber): boolean 
 export function nodeState(
   day: DayNumber,
   state: Pick<PersistedState, 'days'>,
-  pacing: PacingMode,
-  today: ISODate,
+  now: Date,
   hasContent: boolean,
+  admin = false,
 ): NodeState {
   const progress = state.days[day];
   if (progress?.completedAt) return progress.hardcoreCompletedAt ? 'mastered' : 'completed';
   if (!hasContent) return 'locked';
-  if (day === 1) return 'current';
+  if (admin || day === 1) return 'current';
 
   const previous = state.days[day - 1];
   if (!previous?.completedAt) return 'locked';
-  if (pacing === 'daily' && toISODate(previous.completedAt) >= today) return 'cooldown';
+  if (now.getTime() < new Date(previous.completedAt).getTime() + DAY_WAIT_MS) return 'cooldown';
   return 'current';
+}
+
+/** When a cooldown day opens: 24 hours after the previous day was completed. */
+export function cooldownOpensAt(day: DayNumber, state: Pick<PersistedState, 'days'>): string | null {
+  const completedAt = state.days[day - 1]?.completedAt;
+  if (!completedAt) return null;
+  return new Date(new Date(completedAt).getTime() + DAY_WAIT_MS).toISOString();
 }
 
 export interface PathNodeModel {
   day: DayNumber;
   state: NodeState;
   content: DayContent | undefined;
+  opensAt: string | null;
 }
 
 export function buildPath(
   days: readonly DayContent[],
   state: Pick<PersistedState, 'days'>,
-  pacing: PacingMode,
-  today: ISODate,
+  now: Date,
+  admin = false,
 ): PathNodeModel[] {
   const byDay = new Map(days.map((d) => [d.day, d]));
   return Array.from({ length: TOTAL_DAYS }, (_, i) => {
     const day = i + 1;
     const content = byDay.get(day);
-    return { day, content, state: nodeState(day, state, pacing, today, Boolean(content)) };
+    const nodeStateValue = nodeState(day, state, now, Boolean(content), admin);
+    return {
+      day,
+      content,
+      state: nodeStateValue,
+      opensAt: nodeStateValue === 'cooldown' ? cooldownOpensAt(day, state) : null,
+    };
   });
 }
 

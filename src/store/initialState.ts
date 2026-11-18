@@ -6,7 +6,6 @@ export const DEFAULT_SETTINGS: Settings = {
   sound: true,
   haptics: true,
   motion: 'system',
-  pacing: 'daily',
 };
 
 export function createInitialState(now: Date = new Date()): PersistedState {
@@ -32,6 +31,11 @@ export function normalizeState(partial: Partial<PersistedState> | undefined): Pe
     ...partial,
     schemaVersion: SCHEMA_VERSION,
     profile: { ...base.profile, ...partial.profile },
-    settings: { ...base.settings, ...partial.settings },
+    settings: {
+      theme: partial.settings?.theme ?? base.settings.theme,
+      sound: partial.settings?.sound ?? base.settings.sound,
+      haptics: partial.settings?.haptics ?? base.settings.haptics,
+      motion: partial.settings?.motion ?? base.settings.motion,
+    },
   };
 }

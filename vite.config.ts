@@ -2,9 +2,11 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
+const onVercel = Boolean((globalThis as { process?: { env?: { VERCEL?: string } } }).process?.env?.VERCEL);
+
 export default defineConfig(({ command }) => ({
   // GitHub Pages serves the app from /30Day-Challenge/. Vercel serves it from the domain root.
-  base: process.env.VERCEL ? '/' : command === 'build' ? '/30Day-Challenge/' : '/',
+  base: onVercel ? '/' : command === 'build' ? '/30Day-Challenge/' : '/',
   plugins: [
     react(),
     VitePWA({

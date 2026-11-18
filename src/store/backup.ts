@@ -40,7 +40,6 @@ const persistedState = z.object({
     sound: z.boolean(),
     haptics: z.boolean(),
     motion: z.enum(['system', 'reduced', 'full']),
-    pacing: z.enum(['daily', 'free']),
   }),
   days: z.record(z.string(), dayProgress),
   logEntries: z.record(z.string(), logEntry),

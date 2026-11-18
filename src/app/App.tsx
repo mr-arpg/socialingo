@@ -13,6 +13,7 @@ const BadgesScreen = lazy(() => import('../features/badges/BadgesScreen').then((
 const SettingsScreen = lazy(() =>
   import('../features/settings/SettingsScreen').then((m) => ({ default: m.SettingsScreen })),
 );
+const AdminScreen = lazy(() => import('../features/admin/AdminScreen').then((m) => ({ default: m.AdminScreen })));
 
 export function App() {
   useTheme();
@@ -31,6 +32,7 @@ export function App() {
             <Route path="stats" element={<StatsScreen />} />
             <Route path="badges" element={<BadgesScreen />} />
             <Route path="settings" element={<SettingsScreen />} />
+            <Route path="admin" element={<AdminScreen />} />
           </Route>
           <Route path="day/:dayNumber" element={<DayScreen />} />
           <Route path="*" element={<Navigate to="/" replace />} />
