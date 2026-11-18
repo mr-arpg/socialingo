@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-cream font-sans text-ink antialiased dark:bg-night dark:text-slate-100;
+  }
+  :focus-visible {
+    @apply outline-none ring-4 ring-indigo-400/60;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-3xl border-2 border-b-4 border-slate-200 bg-white dark:border-night-line dark:bg-night-card;
+  }
+  .eyebrow {
+    @apply text-xs font-extrabold uppercase tracking-widest text-ink-soft dark:text-slate-400;
+  }
+  .pb-safe {
+    padding-bottom: max(env(safe-area-inset-bottom), 0.5rem);
+  }
+}
+
+@layer utilities {
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+}
+
+@media print {
+  @page {
+    margin: 18mm;
+  }
+  html,
+  body {
+    background: #fff !important;
+  }
+  #root {
+    display: none !important;
+  }
+}
+
+input[type='range'].rating-slider {
+  @apply h-3 w-full cursor-pointer appearance-none rounded-full bg-slate-200 dark:bg-night-line;
+}
+input[type='range'].rating-slider::-webkit-slider-thumb {
+  @apply h-8 w-8 appearance-none rounded-full border-4 border-white bg-emerald-500 shadow-md dark:border-night-card;
+}
+input[type='range'].rating-slider::-moz-range-thumb {
+  @apply h-7 w-7 rounded-full border-4 border-white bg-emerald-500 shadow-md dark:border-night-card;
+}
