@@ -1,0 +1,137 @@
+{
+  "entities": {
+    "UserAccount": {
+      "title": "UserAccount",
+      "description": "Authenticated user account root document anchoring ownership for synced challenge data.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Firebase Auth UID of the account owner."
+        },
+        "displayName": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "User display name."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the account document was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the account document was last updated."
+        }
+      },
+      "required": ["ownerId", "displayName", "createdAt", "updatedAt"]
+    },
+    "ChallengeProgress": {
+      "title": "ChallengeProgress",
+      "description": "Cross-device synced 30-Day Challenge progress, logbook entries, reps, XP ledger, badges, and settings.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Firebase Auth UID of the progress owner."
+        },
+        "schemaVersion": {
+          "type": "integer",
+          "description": "Persisted state schema version (currently 1)."
+        },
+        "profile": {
+          "type": "object",
+          "description": "User profile metadata including displayName (maxLength 100) and createdAt."
+        },
+        "settings": {
+          "type": "object",
+          "description": "User preferences for theme, sound, haptics, and motion."
+        },
+        "days": {
+          "type": "object",
+          "description": "Map of DayNumber (1-30) to DayProgress records."
+        },
+        "logEntries": {
+          "type": "object",
+          "description": "Map of DayNumber (1-30) to LogEntry reflection records."
+        },
+        "repEvents": {
+          "type": "array",
+          "description": "Bounded list (max 5000) of RepEvent interaction records."
+        },
+        "xpEvents": {
+          "type": "array",
+          "description": "Bounded list (max 5000) of append-only XpEvent records."
+        },
+        "openedChests": {
+          "type": "array",
+          "description": "List of opened chapter chest IDs (max 4)."
+        },
+        "unlockedBadges": {
+          "type": "object",
+          "description": "Map of badge ID to ISO unlock timestamp."
+        },
+        "lastDeviceId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Identifier of the browser session that wrote this revision."
+        },
+        "clientUpdatedAt": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "ISO timestamp of the local state mutation."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when cloud sync was initialized."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of the latest cloud sync."
+        }
+      },
+      "required": [
+        "ownerId",
+        "schemaVersion",
+        "profile",
+        "settings",
+        "days",
+        "logEntries",
+        "repEvents",
+        "xpEvents",
+        "openedChests",
+        "unlockedBadges",
+        "lastDeviceId",
+        "clientUpdatedAt",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "#/entities/UserAccount"
+      },
+      "description": "Private root account document owned exclusively by {userId}."
+    },
+    "/users/{userId}/sync/{syncId}": {
+      "schema": {
+        "$ref": "#/entities/ChallengeProgress"
+      },
+      "description": "Private challenge progress sync document (syncId = 'challenge_v1') owned by {userId}."
+    }
+  }
+}

@@ -1,6 +1,8 @@
 import { lazy, Suspense } from 'react';
 import { HashRouter, Navigate, Route, Routes } from 'react-router';
+import { FirebaseProvider } from '../components/auth/FirebaseProvider';
 import { BadgeToaster } from '../components/feedback/BadgeToaster';
+import { ErrorBoundary } from '../components/feedback/ErrorBoundary';
 import { AppShell } from '../components/layout/AppShell';
 import { PathScreen } from '../features/path/PathScreen';
 import { useTheme } from '../hooks/useTheme';
@@ -22,23 +24,27 @@ export function App() {
   if (!hydrated) return <Splash />;
 
   return (
-    <HashRouter>
-      <BadgeToaster />
-      <Suspense fallback={<Splash />}>
-        <Routes>
-          <Route element={<AppShell />}>
-            <Route index element={<PathScreen />} />
-            <Route path="logbook" element={<LogbookScreen />} />
-            <Route path="stats" element={<StatsScreen />} />
-            <Route path="badges" element={<BadgesScreen />} />
-            <Route path="settings" element={<SettingsScreen />} />
-            <Route path="admin" element={<AdminScreen />} />
-          </Route>
-          <Route path="day/:dayNumber" element={<DayScreen />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Suspense>
-    </HashRouter>
+    <ErrorBoundary>
+      <FirebaseProvider>
+        <HashRouter>
+          <BadgeToaster />
+          <Suspense fallback={<Splash />}>
+            <Routes>
+              <Route element={<AppShell />}>
+                <Route index element={<PathScreen />} />
+                <Route path="logbook" element={<LogbookScreen />} />
+                <Route path="stats" element={<StatsScreen />} />
+                <Route path="badges" element={<BadgesScreen />} />
+                <Route path="settings" element={<SettingsScreen />} />
+                <Route path="admin" element={<AdminScreen />} />
+              </Route>
+              <Route path="day/:dayNumber" element={<DayScreen />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Suspense>
+        </HashRouter>
+      </FirebaseProvider>
+    </ErrorBoundary>
   );
 }
 

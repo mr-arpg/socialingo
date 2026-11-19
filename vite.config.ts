@@ -2,11 +2,13 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
-const onVercel = Boolean((globalThis as { process?: { env?: { VERCEL?: string } } }).process?.env?.VERCEL);
-
-export default defineConfig(({ command }) => ({
-  // GitHub Pages serves the app from /30Day-Challenge/. Vercel serves it from the domain root.
-  base: onVercel ? '/' : command === 'build' ? '/30Day-Challenge/' : '/',
+export default defineConfig({
+  base: '/',
+  server: {
+    host: '0.0.0.0',
+    port: 3000,
+    allowedHosts: true,
+  },
   plugins: [
     react(),
     VitePWA({
@@ -30,8 +32,9 @@ export default defineConfig(({ command }) => ({
         ],
       },
       workbox: {
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2}'],
       },
     }),
   ],
-}));
+});

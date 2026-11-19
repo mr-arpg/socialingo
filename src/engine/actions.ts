@@ -131,6 +131,7 @@ export function toggleChecklist(
   const progress = ensureDay(state, day, ctx);
   const key = tier === 'standard' ? 'standardChecklist' : 'hardcoreChecklist';
   const list = [...progress[key]];
+  while (list.length <= index) list.push(false);
   list[index] = !list[index];
   return withDay(state, { ...progress, [key]: list });
 }

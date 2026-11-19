@@ -23,6 +23,7 @@ import { createId } from '../lib/text';
 import { createInitialState, normalizeState } from './initialState';
 import { importLegacyProgress } from './migrations';
 import { idbStorage } from './storage';
+import { MAX_DISPLAY_NAME_LENGTH } from '../engine/mergeState';
 
 export const STORAGE_KEY = '30day-challenge:v1';
 
@@ -43,6 +44,7 @@ interface AppStore {
   updateSettings: (patch: Partial<Settings>) => void;
   setDisplayName: (name: string) => void;
   replaceState: (state: PersistedState) => void;
+  applyRemoteState: (state: PersistedState) => void;
   resetAll: () => void;
   dismissBadge: (id: string) => void;
 }
@@ -121,9 +123,16 @@ export const useAppStore = create<AppStore>()(
           set((s) => ({ data: { ...s.data, settings: { ...s.data.settings, ...patch } } })),
 
         setDisplayName: (displayName) =>
-          set((s) => ({ data: { ...s.data, profile: { ...s.data.profile, displayName } } })),
+          set((s) => ({
+            data: {
+              ...s.data,
+              profile: { ...s.data.profile, displayName: displayName.slice(0, MAX_DISPLAY_NAME_LENGTH) },
+            },
+          })),
 
         replaceState: (state) => set({ data: normalizeState(state), badgeQueue: [] }),
+
+        applyRemoteState: (state) => set({ data: normalizeState(state), badgeQueue: [] }),
 
         resetAll: () =>
           set((s) => ({ data: { ...createInitialState(), settings: s.data.settings }, badgeQueue: [] })),
