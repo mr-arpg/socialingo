@@ -93,7 +93,7 @@ export function parseBackup(json: string): ParseResult {
   const parsed = backupFile.safeParse(raw);
   if (!parsed.success) {
     const issue = parsed.error.issues[0];
-    return { ok: false, error: `This doesn't look like a 30-Day Challenge backup (${issue?.path.join('.') || 'root'}).` };
+    return { ok: false, error: `This doesn't look like a Socialingo backup (${issue?.path.join('.') || 'root'}).` };
   }
   if (parsed.data.schemaVersion > SCHEMA_VERSION) {
     return { ok: false, error: 'This backup was made by a newer version of the app. Update the app and try again.' };

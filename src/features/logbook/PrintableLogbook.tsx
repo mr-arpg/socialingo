@@ -17,7 +17,7 @@ export function PrintableLogbook({ entries, displayName }: PrintableLogbookProps
   return createPortal(
     <div id="print-root" className="hidden bg-white font-sans text-black print:block">
       <header className="mb-8 border-b-2 border-black pb-4">
-        <p className="text-xs font-extrabold uppercase tracking-widest text-neutral-500">30-Day Social Challenge</p>
+        <p className="text-xs font-extrabold uppercase tracking-widest text-neutral-500">Socialingo</p>
         <h1 className="text-3xl font-black">Field Logbook{owner ? ` · ${owner}` : ''}</h1>
         <p className="mt-2 text-sm text-neutral-600">
           Exported {formatLongDate(new Date().toISOString())} · {totals.entries} entries · {formatNumber(totals.words)} words

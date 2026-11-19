@@ -33,7 +33,7 @@ export function SettingsScreen() {
 
   const exportBackup = async () => {
     const { createBackup } = await import('../../store/backup');
-    downloadFile(`30day-challenge-backup-${toISODate(new Date())}.json`, JSON.stringify(createBackup(data), null, 2));
+    downloadFile(`socialingo-backup-${toISODate(new Date())}.json`, JSON.stringify(createBackup(data), null, 2));
     setMessage({ tone: 'ok', text: 'Backup downloaded. Keep it somewhere safe.' });
   };
 

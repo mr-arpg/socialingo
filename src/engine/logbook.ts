@@ -145,7 +145,7 @@ export function logbookToMarkdown(entries: readonly LogbookDocEntry[], { display
   const lines: string[] = [
     `# Field Logbook${owner ? ` · ${owner}` : ''}`,
     '',
-    `_30-Day Social Challenge · exported ${formatLongDate(exportedAt.toISOString())}_`,
+    `_Socialingo · exported ${formatLongDate(exportedAt.toISOString())}_`,
     '',
     `**Entries:** ${totals.entries} · **Words:** ${formatNumber(totals.words)} · **Average confidence:** ${
       totals.avgConfidence === null ? 'n/a' : `${totals.avgConfidence.toFixed(1)}/5`

@@ -21,10 +21,7 @@ export function Sidebar() {
       <div className="mb-8 flex items-center gap-3 px-2">
         <img src={`${import.meta.env.BASE_URL}icon.svg`} alt="" className="h-10 w-10" />
         <div className="leading-tight">
-          <p className="text-lg font-black text-emerald-600 dark:text-emerald-400">30-Day</p>
-          <p className="text-xs font-bold uppercase tracking-widest text-ink-soft dark:text-slate-400">
-            Social Challenge
-          </p>
+          <p className="text-xl font-black text-emerald-600 dark:text-emerald-400">Socialingo</p>
         </div>
       </div>
       <nav aria-label="Main" className="flex flex-1 flex-col gap-1">

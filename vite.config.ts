@@ -20,8 +20,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon-180x180.png', 'icon.svg'],
       manifest: {
-        name: '30-Day Social Challenge',
-        short_name: '30-Day',
+        name: 'Socialingo',
+        short_name: 'Socialingo',
         description: 'A gamified 30-day path to social confidence, charisma, and real connection.',
         theme_color: '#10B981',
         background_color: '#FFF9F0',
