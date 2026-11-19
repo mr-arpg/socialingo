@@ -2,8 +2,13 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
+const onGitHubPages = Boolean(
+  (globalThis as { process?: { env?: { GITHUB_ACTIONS?: string } } }).process?.env?.GITHUB_ACTIONS,
+);
+
 export default defineConfig({
-  base: '/',
+  // Firebase Hosting serves the site from the domain root. GitHub Pages serves it from /socialingo/.
+  base: onGitHubPages ? '/socialingo/' : '/',
   server: {
     host: '0.0.0.0',
     port: 3000,
