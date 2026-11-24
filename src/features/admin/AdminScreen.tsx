@@ -22,7 +22,7 @@ export function AdminScreen() {
           <div>
             <h2 className="text-lg font-black">Open every written day</h2>
             <p className="text-sm text-ink-soft dark:text-slate-400">
-              Skips the 24-hour wait and the “finish the previous day” lock. Days that have no mission yet stay locked.
+              Skips the wait until the next day and the “finish the previous day” lock. Days that have no mission yet stay locked.
             </p>
           </div>
         </div>

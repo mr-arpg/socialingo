@@ -6,7 +6,7 @@ import type { AccentColor, NodeState } from '../../types';
 import { Button } from '../../components/ui/Button';
 import type { PathNodeModel } from '../../engine/day';
 import { ACCENTS } from '../../lib/accents';
-import { formatDateTime } from '../../lib/dates';
+import { formatLongDate } from '../../lib/dates';
 import { cn } from '../../lib/text';
 
 interface PathNodeProps {
@@ -42,7 +42,7 @@ function NodeIcon({ state, milestone }: { state: NodeState; milestone: boolean }
 
 const STATE_LABEL: Record<NodeState, string> = {
   locked: 'locked',
-  cooldown: 'opens in 24 hours',
+  cooldown: 'opens the next day',
   current: 'ready to start',
   completed: 'completed',
   mastered: 'mastered',
@@ -109,8 +109,8 @@ export const PathNode = forwardRef<HTMLDivElement, PathNodeProps>(function PathN
             {state === 'cooldown' && (
               <p className="mt-3 rounded-2xl bg-sky-50 p-3 text-sm font-bold text-sky-700 dark:bg-sky-500/10 dark:text-sky-300">
                 {node.opensAt
-                  ? `Opens ${formatDateTime(node.opensAt)}, 24 hours after you finished Day ${day - 1}.`
-                  : 'This opens 24 hours after you finish the previous day.'}
+                  ? `Opens ${formatLongDate(node.opensAt)}, the day after you finish Day ${day - 1}.`
+                  : 'This opens the day after you finish the previous day.'}
               </p>
             )}
           </motion.div>

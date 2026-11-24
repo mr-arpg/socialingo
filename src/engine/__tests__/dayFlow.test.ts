@@ -4,7 +4,7 @@ import { DAYS } from '../../content/days';
 import { createInitialState } from '../../store/initialState';
 import * as actions from '../actions';
 import type { ActionContext } from '../actions';
-import { buildPath, nodeState, tallyReps } from '../day';
+import { buildPath, cooldownOpensAt, nodeState, tallyReps } from '../day';
 import { computeStats } from '../stats';
 
 function makeCtx(start = new Date(2026, 10, 18, 9, 0)) {
@@ -84,10 +84,23 @@ describe('day flow', () => {
     const finishedAt = new Date(state.days[1].completedAt!);
     expect(nodeState(1, state, finishedAt, true)).toBe('completed');
     expect(nodeState(2, state, finishedAt, true)).toBe('cooldown');
-    expect(nodeState(2, state, new Date(finishedAt.getTime() + 24 * 60 * 60 * 1000 - 1), true)).toBe('cooldown');
-    expect(nodeState(2, state, new Date(finishedAt.getTime() + 24 * 60 * 60 * 1000), true)).toBe('current');
-    expect(nodeState(3, state, new Date(finishedAt.getTime() + 48 * 60 * 60 * 1000), true)).toBe('locked');
+    // Same calendar day stays locked, even if almost a full day has passed.
+    expect(nodeState(2, state, new Date(2026, 10, 18, 23, 59), true)).toBe('cooldown');
+    // The next calendar day opens at local midnight, not 24 hours after the finish.
+    expect(nodeState(2, state, new Date(2026, 10, 19, 0, 0), true)).toBe('current');
+    expect(cooldownOpensAt(2, state)).toBe(new Date(2026, 10, 19).toISOString());
+    expect(nodeState(3, state, new Date(2026, 10, 19, 12, 0), true)).toBe('locked');
     expect(nodeState(8, state, finishedAt, true, true)).toBe('current');
+  });
+
+  it('opens the next day at midnight after a late finish, not 24 hours later', () => {
+    const ctx = makeCtx(new Date(2026, 10, 18, 23, 30));
+    const { state } = playDay(createInitialState(), day1, ctx);
+    const finishedAt = new Date(state.days[1].completedAt!);
+
+    expect(nodeState(2, state, finishedAt, true)).toBe('cooldown');
+    expect(nodeState(2, state, new Date(finishedAt.getTime() + 60 * 60 * 1000), true)).toBe('current');
+    expect(cooldownOpensAt(2, state)).toBe(new Date(2026, 10, 19).toISOString());
   });
 
   it('does not award XP twice for repeated actions', () => {

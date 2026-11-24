@@ -10,10 +10,9 @@ import type {
   RepEvent,
 } from '../types';
 import { COUNTER_KEYS } from '../types';
+import { addDays, toISODate } from '../lib/dates';
 
 export const TOTAL_DAYS = 30;
-/** The next day opens this long after the previous one is completed. */
-export const DAY_WAIT_MS = 24 * 60 * 60 * 1000;
 
 export function emptyCounters(): CounterTotals {
   return { approaches: 0, conversations: 0, kindnesses: 0, courageReps: 0 };
@@ -62,15 +61,16 @@ export function nodeState(
 
   const previous = state.days[day - 1];
   if (!previous?.completedAt) return 'locked';
-  if (now.getTime() < new Date(previous.completedAt).getTime() + DAY_WAIT_MS) return 'cooldown';
+  if (toISODate(now) <= toISODate(previous.completedAt)) return 'cooldown';
   return 'current';
 }
 
-/** When a cooldown day opens: 24 hours after the previous day was completed. */
+/** Local midnight at the start of the calendar day after the previous day was completed. */
 export function cooldownOpensAt(day: DayNumber, state: Pick<PersistedState, 'days'>): string | null {
   const completedAt = state.days[day - 1]?.completedAt;
   if (!completedAt) return null;
-  return new Date(new Date(completedAt).getTime() + DAY_WAIT_MS).toISOString();
+  const [year, month, date] = addDays(toISODate(completedAt), 1).split('-').map(Number);
+  return new Date(year, month - 1, date).toISOString();
 }
 
 export interface PathNodeModel {
